@@ -19,6 +19,7 @@ namespace Verstopper
 
         private void startGameBtn_Click(object sender, EventArgs e)
         {
+            // Wanneer er op de knop wordt geklikt wordt er opgehaald hoeveel minuten er is ingevuld en wordt dit doorgegeven aan het Game scherm.
             GameMenu gameMenu = new GameMenu((int) gameTimeNumber.Value * 60);
             gameMenu.Show();
         }
