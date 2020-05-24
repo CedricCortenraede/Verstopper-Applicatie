@@ -16,6 +16,7 @@ namespace Verstopper
 {
     public partial class GameMenu : Form
     {
+        
         // Moet veranderd worden naar je Domoticz link.
         const string baseAddress = "http://127.0.0.1:8080" + "/json.htm";
 
@@ -23,6 +24,7 @@ namespace Verstopper
 
         private int secondsLeftInGame;
         private bool canHide;
+        public string lastSwitch;
 
         // Is waarschijnlijk niet nodig aangezien de route via de Domoticz logs opgehaald kunnen worden.
         private Dictionary<DateTime, Switch> path = new Dictionary<DateTime, Switch>();
@@ -72,15 +74,40 @@ namespace Verstopper
             // Zet de beschikbare switches in een globaal beschikbare list.
             switches = switchResult.result;
         }
+        //
+        //
+        //
+        //
+        //
+        //
+        //HIER KIJKEN
+        //dit hieronder heeft mijn slaaptekorte kop even snel geschreven 
+        //om even mijn idee dr in te krijgen
+        //harstikke lelijk en werkt wss ook niet
+        //
+        //
+        //
+        //
 
-        private void UseSwitch(Switch @switch, SwitchActionEnum action)
+        private void UseSwitch(Switch @switch)
         {
-            String paramString = "?type=command&param=switchlight&idx=" + @switch.idx + "&switchcmd=" + action;
+            String paramString = "?type=command&param=switchlight&idx=" + @switch.idx + "&switchcmd=On";
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseAddress + paramString);
             request.Method = "GET";
 
             HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+
+
+
+            String paramString2 = "?type=command&param=switchlight&idx=" + @switch.idx + "&switchcmd=Off";
+
+            HttpWebRequest request2 = (HttpWebRequest)WebRequest.Create(baseAddress + paramString);
+            request.Method = "GET";
+
+            HttpWebResponse response2 = (HttpWebResponse)request.GetResponse();
+
+            lastSwitch = @switch.ToString();
         }
 
         // GAME
@@ -120,6 +147,46 @@ namespace Verstopper
 
                 gameTimeLeftLabel.Text = "Afgelopen";
             }
+        }
+
+        private void kamer1btn_Click(object sender, EventArgs e)
+        {
+            //UseSwitch(1);
+        }
+
+        private void kamer2btn_Click(object sender, EventArgs e)
+        {
+            //UseSwitch(2);
+        }
+
+        private void kamer3btn_Click(object sender, EventArgs e)
+        {
+            //UseSwitch(3);
+        }
+
+        private void kamer4btn_Click(object sender, EventArgs e)
+        {
+            //UseSwitch(4);
+        }
+
+        private void kamer5btn_Click(object sender, EventArgs e)
+        {
+            //UseSwitch(5);
+        }
+
+        private void kamer6btn_Click(object sender, EventArgs e)
+        {
+            //UseSwitch(6);
+        }
+
+        private void kamer7btn_Click(object sender, EventArgs e)
+        {
+            //UseSwitch(7);
+        }
+
+        private void kamer8btn_Click(object sender, EventArgs e)
+        {
+            //UseSwitch(8);
         }
     }
 }
