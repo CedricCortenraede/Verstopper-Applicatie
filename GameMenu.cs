@@ -42,12 +42,13 @@ namespace Verstopper
             this.SendLogMessageToDomoticz("[HIDING] Started: " + DateTime.Now.ToString("dd/MM/yy hh:mm:ss") + ", Game length: " + playingTimeInSeconds + " seconds");
 
             // Zet het aantal seconden van het spel naar de gespecificeerde tijd.
-            // Verder wordt ook aangezet dat de verstopper zich kan gaan verstoppen.
             this.secondsLeftInGame = playingTimeInSeconds;
-            this.canHide = true;
 
             // De tijd wordt gestart
             this.StartGameTimer();
+
+            // Verder wordt ook aangezet dat de verstopper zich kan gaan verstoppen.
+            this.canHide = true;
         }
 
         // API CALLS
