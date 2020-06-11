@@ -1,6 +1,6 @@
 ﻿namespace Verstopper
 {
-    partial class GameMenu
+    partial class HideGameMenu
     {
         /// <summary>
         /// Required designer variable.
@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HideGameMenu));
             this.gameTimer = new System.Windows.Forms.Timer(this.components);
             this.gameTimeLeftLabel = new System.Windows.Forms.Label();
             this.timeLeftLabel = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.kamer1btn = new System.Windows.Forms.Button();
@@ -72,30 +72,20 @@
             this.timeLeftLabel.TabIndex = 1;
             this.timeLeftLabel.Text = "Tijd over:";
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(4, 86);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(193, 24);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Gebruikte Power Ups:";
-            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Window;
             this.panel1.Controls.Add(this.timeLeftLabel);
-            this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.gameTimeLeftLabel);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(223, 453);
+            this.panel1.Size = new System.Drawing.Size(223, 421);
             this.panel1.TabIndex = 3;
             // 
             // pictureBox1
             // 
-            this.pictureBox1.ImageLocation = "./Images/rsz_floorplan2.png";
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.ImageLocation = "";
             this.pictureBox1.Location = new System.Drawing.Point(220, 0);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(580, 421);
@@ -182,11 +172,11 @@
             this.kamer7btn.UseVisualStyleBackColor = true;
             this.kamer7btn.Click += new System.EventHandler(this.kamer7btn_Click);
             // 
-            // GameMenu
+            // HideGameMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 415);
             this.Controls.Add(this.kamer7btn);
             this.Controls.Add(this.kamer8btn);
             this.Controls.Add(this.kamer6btn);
@@ -197,8 +187,8 @@
             this.Controls.Add(this.kamer1btn);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.panel1);
-            this.Name = "GameMenu";
-            this.Text = "Verstoppertje: In Game";
+            this.Name = "HideGameMenu";
+            this.Text = "Verstoppertje: Aan het verstoppen";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -211,7 +201,6 @@
         private System.Windows.Forms.Timer gameTimer;
         private System.Windows.Forms.Label gameTimeLeftLabel;
         private System.Windows.Forms.Label timeLeftLabel;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button kamer1btn;

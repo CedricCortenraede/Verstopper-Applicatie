@@ -14,9 +14,8 @@ using System.Windows.Forms;
 
 namespace Verstopper
 {
-    public partial class GameMenu : Form
+    public partial class HideGameMenu : Form
     {
-        
         // De Domoticz link, moet evt. per persoon veranderd worden.
         const string baseAddress = "http://127.0.0.1:8080" + "/json.htm";
 
@@ -28,18 +27,18 @@ namespace Verstopper
         private bool canHide = false;
         private Switch currentSwitch = null;
 
-        public GameMenu(int playingTimeInSeconds)
+        public HideGameMenu(int playingTimeInSeconds)
         {
             InitializeComponent();
 
             // Haal alle sensoren op via de Domoticz API.
-            this.GetMotionSensorsAndPowerUps();
+            this.switches = Domoticz.GetSwitches();
 
             // Doe alle switches uitzetten zodat deze niet al aanstaan voordat het spel begint.
             this.TurnOffAllSwitches();
 
             // Stuur een bericht naar Domoticz dat het verstoppen begint, zo kan dit in de zoekapplicatie gekeken worden wanneer het spel begonnen is.
-            this.SendLogMessageToDomoticz("[HIDING] Started: " + DateTime.Now.ToString("dd/MM/yy hh:mm:ss") + ", Game length: " + playingTimeInSeconds + " seconds");
+            Domoticz.SendLogMessageToDomoticz("[HIDING] Started: " + DateTime.Now.ToString("dd/MM/yy hh:mm:ss") + ", Game length: " + playingTimeInSeconds + " seconds");
 
             // Zet het aantal seconden van het spel naar de gespecificeerde tijd.
             this.secondsLeftInGame = playingTimeInSeconds;
@@ -51,7 +50,7 @@ namespace Verstopper
             this.canHide = true;
         }
 
-        // API CALLS
+        /*// API CALLS
         private void GetMotionSensorsAndPowerUps()
         {
             // Doe een API request naar de link om alle Switches op te halen van Domoticz.
@@ -94,14 +93,14 @@ namespace Verstopper
             request.Method = "GET";
 
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-        }
+        }*/
 
         // GAME
         private void TurnOffAllSwitches()
         {
             foreach(Switch @switch in this.switches)
             {
-                this.UseSwitch(@switch, SwitchActionEnum.Off);
+                Domoticz.UseSwitch(@switch, SwitchActionEnum.Off);
             }
         }
 
@@ -117,18 +116,18 @@ namespace Verstopper
             // Huidige switch uitzetten
             if (this.currentSwitch != null)
             {
-                this.UseSwitch(this.currentSwitch, SwitchActionEnum.Off);
+                Domoticz.UseSwitch(this.currentSwitch, SwitchActionEnum.Off);
             }
 
             // Nieuwe switch aanzetten
-            this.UseSwitch(@switch, SwitchActionEnum.On);
+            Domoticz.UseSwitch(@switch, SwitchActionEnum.On);
 
             if (this.currentSwitch != null)
             {
-                this.SendLogMessageToDomoticz("[HIDING] From: " + this.currentSwitch.Name + " (" + this.currentSwitch.idx + "), To: " + @switch.Name + " (" + @switch.idx + ")");
+                Domoticz.SendLogMessageToDomoticz("[HIDING] From: " + this.currentSwitch.Name + " (" + this.currentSwitch.idx + "), To: " + @switch.Name + " (" + @switch.idx + ")");
             } else
             {
-                this.SendLogMessageToDomoticz("[HIDING] From: null" + "), To: " + @switch.Name + " (" + @switch.idx + ")");
+                Domoticz.SendLogMessageToDomoticz("[HIDING] From: null" + "), To: " + @switch.Name + " (" + @switch.idx + ")");
             }
 
             this.currentSwitch = @switch;
@@ -168,7 +167,7 @@ namespace Verstopper
 
                 gameTimeLeftLabel.Text = "Afgelopen";
 
-                this.SendLogMessageToDomoticz("[HIDING] Ended, Current room: " + this.currentSwitch.Name + " (" + this.currentSwitch.idx + ")");
+                Domoticz.SendLogMessageToDomoticz("[HIDING] Ended, Current room: " + this.currentSwitch.Name + " (" + this.currentSwitch.idx + ")");
             }
         }
 
