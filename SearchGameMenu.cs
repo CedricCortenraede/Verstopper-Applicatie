@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace Verstopper
 {
     public partial class SearchGameMenu : Form
@@ -85,9 +86,85 @@ namespace Verstopper
             }
         }
 
+       
+
+        
+
         private void checkHiderLocationTimer_Tick(object sender, EventArgs e)
         {
+            if (this.canSearch)
+            {
+                Check(pictureBox1, 1);
+            }
+        }
 
+        private void Check(PictureBox pic, int number)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            if (this.canSearch)
+            {
+                Check(pictureBox1, 1);
+            }
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            if (this.canSearch)
+            {
+                Check(pictureBox2, 2);
+            }
+        }
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            if (this.canSearch)
+            {
+                Check(pictureBox3, 3);
+            }
+        }
+
+        private void pictureBox4_Click(object sender, EventArgs e)
+        {
+            if (this.canSearch)
+            {
+                Check(pictureBox4, 4);
+            }
+        }
+
+        private void pictureBox6_Click(object sender, EventArgs e)
+        {
+            if (this.canSearch)
+            {
+                Check(pictureBox6, 6);
+            }
+        }
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            if (this.canSearch)
+            {
+                Check(pictureBox5, 5);
+            }
+        }
+
+        private void pictureBox8_Click(object sender, EventArgs e)
+        {
+            if (this.canSearch)
+            {
+                Check(pictureBox8, 8);
+            }
+        }
+
+        private void pictureBox7_Click(object sender, EventArgs e)
+        {
+            if (this.canSearch)
+            {
+                Check(pictureBox7, 7);
+            }
         }
     }
 }

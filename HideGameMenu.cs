@@ -23,7 +23,7 @@ namespace Verstopper
         private List<Switch> switches = new List<Switch>();
 
         // Game informatie wordt ook opgeslagen zodat dit makkelijk op te halen is.
-        private int secondsLeftInGame = 0;
+        public int secondsLeftInGame = 0;
         private bool canHide = false;
         private Switch currentSwitch = null;
 
