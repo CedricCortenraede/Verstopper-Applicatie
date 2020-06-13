@@ -77,7 +77,7 @@ namespace Verstopper
             // Nieuwe switch aanzetten
             Domoticz.UseSwitch(@switch, SwitchActionEnum.On);
 
-            Domoticz.SendLogMessageToDomoticz("[HIDING] To: " + @switch.Name + " (" + @switch.idx + ")");
+            Domoticz.SendLogMessageToDomoticz("[HIDING] To: " + @switch.idx);
 
             this.currentSwitch = @switch;
         }

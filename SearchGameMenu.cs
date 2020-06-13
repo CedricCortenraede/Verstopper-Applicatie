@@ -16,6 +16,7 @@ namespace Verstopper
         // Alle switches in Domoticz worden opgeslagen zodat deze makkelijk beschikbaar zijn.
         private List<Switch> switches = new List<Switch>();
 
+        // Alle pictures worden opgeslagen zodat deze makkelijk te benaderen zijn.
         private List<PictureBox> boxList = new List<PictureBox>();
 
         // Game informatie wordt ook opgeslagen zodat dit makkelijk op te halen is.
@@ -215,7 +216,7 @@ namespace Verstopper
                     // Als het een bericht is waar niet wordt verplaatst wordt er naar de volgende gekeken.
                     if (! words[5].Equals("To:")) continue;
 
-                    string switchID = words[9].Trim(new Char[] { '(', ')' });
+                    string switchID = words[6].Trim(new Char[] { '(', ')' });
 
                     foreach (Switch @switch in this.switches)
                     {
