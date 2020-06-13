@@ -71,6 +71,11 @@ namespace Verstopper
             checkHiderLocationTimer.Interval = 100;
             checkHiderLocationTimer.Start();
             checkHiderLocationTimer_Tick(null, null);
+
+            foreach(PictureBox box in boxList)
+            {
+                box.Enabled = false;
+            }
         }
 
         private void StartSearchPartOfGame()
@@ -78,6 +83,11 @@ namespace Verstopper
             // Zorg dat de zoeker nu kan zoeken en de tijd gereset wordt.
             this.canSearch = true;
             this.secondsLeftInGame = 60;
+
+            foreach (PictureBox box in boxList)
+            {
+                box.Enabled = true;
+            }
 
             timeLeftLabel.Text = "Zoek tijd over:";
             this.DisplayGameTimeLeftOnScreen();
@@ -243,71 +253,47 @@ namespace Verstopper
 
         private void Check(PictureBox pic, int number)
         {
-
+            pic.Image = Properties.Resources.error_40;
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
-        {
-            if (this.canSearch)
-            {
-                Check(pictureBox1, 1);
-            }
+        {             
+            Check(pictureBox1, 1);          
         }
 
         private void pictureBox2_Click(object sender, EventArgs e)
-        {
-            if (this.canSearch)
-            {
-                Check(pictureBox2, 2);
-            }
+        {           
+            Check(pictureBox2, 2);          
         }
 
         private void pictureBox3_Click(object sender, EventArgs e)
         {
-            if (this.canSearch)
-            {
-                Check(pictureBox3, 3);
-            }
+            Check(pictureBox3, 3);
         }
 
         private void pictureBox4_Click(object sender, EventArgs e)
         {
-            if (this.canSearch)
-            {
-                Check(pictureBox4, 4);
-            }
+            Check(pictureBox4, 4);
         }
 
         private void pictureBox6_Click(object sender, EventArgs e)
         {
-            if (this.canSearch)
-            {
-                Check(pictureBox6, 6);
-            }
+            Check(pictureBox6, 6);
         }
 
         private void pictureBox5_Click(object sender, EventArgs e)
         {
-            if (this.canSearch)
-            {
-                Check(pictureBox5, 5);
-            }
+            Check(pictureBox5, 5);
         }
 
         private void pictureBox8_Click(object sender, EventArgs e)
         {
-            if (this.canSearch)
-            {
-                Check(pictureBox8, 8);
-            }
+            Check(pictureBox8, 8);
         }
 
         private void pictureBox7_Click(object sender, EventArgs e)
         {
-            if (this.canSearch)
-            {
-                Check(pictureBox7, 7);
-            }
+            Check(pictureBox7, 7);
         }
     }
 }
