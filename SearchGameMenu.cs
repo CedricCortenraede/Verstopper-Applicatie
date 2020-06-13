@@ -16,8 +16,9 @@ namespace Verstopper
         // Alle switches in Domoticz worden opgeslagen zodat deze makkelijk beschikbaar zijn.
         private List<Switch> switches = new List<Switch>();
 
+        private List<PictureBox> boxList = new List<PictureBox>();
+
         // Game informatie wordt ook opgeslagen zodat dit makkelijk op te halen is.
-        private int totalSearchTime = -1;
         private int secondsLeftInGame = -1;
         private bool canSearch = false;
         private bool foundHider = false;
@@ -26,6 +27,15 @@ namespace Verstopper
         public SearchGameMenu()
         {
             InitializeComponent();
+
+            boxList.Add(pictureBox1);
+            boxList.Add(pictureBox2);
+            boxList.Add(pictureBox3);
+            boxList.Add(pictureBox4);
+            boxList.Add(pictureBox5);
+            boxList.Add(pictureBox6);
+            boxList.Add(pictureBox7);
+            boxList.Add(pictureBox8);
 
             this.switches = Domoticz.GetSwitches();
 
@@ -59,13 +69,14 @@ namespace Verstopper
             // De timer om de huidige locatie van de zoeker te vinden wordt gestart.
             checkHiderLocationTimer.Interval = 100;
             checkHiderLocationTimer.Start();
+            checkHiderLocationTimer_Tick(null, null);
         }
 
         private void StartSearchPartOfGame()
         {
             // Zorg dat de zoeker nu kan zoeken en de tijd gereset wordt.
             this.canSearch = true;
-            this.secondsLeftInGame = this.totalSearchTime;
+            this.secondsLeftInGame = 60;
 
             timeLeftLabel.Text = "Zoek tijd over:";
             this.DisplayGameTimeLeftOnScreen();
@@ -83,11 +94,19 @@ namespace Verstopper
         {
             if (this.currentSwitch == null || !this.currentSwitch.Equals(@switch))
             {
-                MessageBox.Show("HIDER GOES TO ROOM " + @switch.Name);
+                if (this.currentSwitch != null)
+                {
+                    this.boxList[int.Parse(this.currentSwitch.idx) - 1].Image = Properties.Resources.question_mark_40;
+                }
+
+                if (this.secondsLeftInGame > 15)
+                {
+                    this.boxList[int.Parse(@switch.idx) - 1].Image = Properties.Resources.exclamation_mark_40;
+                }
 
                 this.currentSwitch = @switch;
 
-                // TODO Display in front end
+
             }
         }
 
@@ -135,7 +154,6 @@ namespace Verstopper
                 // Als er meer tijd is verstreken dan de zoek tijd betekent dat deze niet meer geldig is, dan kan er naar de volgende log gekeken worden.
                 if (secondsPassedFromStartTime > totalSecondsForHiding) continue;
 
-                this.totalSearchTime = totalSecondsForHiding;
                 this.secondsLeftInGame = secondsLeftInGame;
 
                 // De game kan nu gestart worden nu de informatie is opgehaald.
@@ -155,6 +173,14 @@ namespace Verstopper
                 this.secondsLeftInGame--;
 
                 this.DisplayGameTimeLeftOnScreen();
+
+                if (secondsLeftInGame <= 15 && !this.canSearch)
+                {
+                    foreach (PictureBox box in this.boxList)
+                    {
+                        box.Image = Properties.Resources.question_mark_40;
+                    }
+                }
             } else
             {
                 // De huidige Game tijd is afgelopen, er moet nu gecontroleerd worden of het spel in totaal is afgelopen of alleen het verstop gedeelte.
@@ -187,9 +213,9 @@ namespace Verstopper
                     if (! words[4].Equals("[HIDING]")) continue;
 
                     // Als het een bericht is waar niet wordt verplaatst wordt er naar de volgende gekeken.
-                    if (! words[10].Equals("To:")) continue;
+                    if (! words[5].Equals("To:")) continue;
 
-                    string switchID = words[14].Trim(new Char[] { '(', ')' });
+                    string switchID = words[9].Trim(new Char[] { '(', ')' });
 
                     foreach (Switch @switch in this.switches)
                     {
