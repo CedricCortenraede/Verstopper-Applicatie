@@ -38,7 +38,7 @@ namespace Verstopper
             this.TurnOffAllSwitches();
 
             // Stuur een bericht naar Domoticz dat het verstoppen begint, zo kan dit in de zoekapplicatie gekeken worden wanneer het spel begonnen is.
-            Domoticz.SendLogMessageToDomoticz("[HIDING] Started: " + DateTime.Now.ToString("dd/MM/yy hh:mm:ss") + ", Game length: " + playingTimeInSeconds + " seconds");
+            Domoticz.SendLogMessageToDomoticz("[HIDING] Started: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + ", Game length: " + playingTimeInSeconds + " seconds");
 
             // Zet het aantal seconden van het spel naar de gespecificeerde tijd.
             this.secondsLeftInGame = playingTimeInSeconds;
