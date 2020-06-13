@@ -46,6 +46,7 @@
             this.pictureBox7 = new System.Windows.Forms.PictureBox();
             this.pictureBox8 = new System.Windows.Forms.PictureBox();
             this.gameTimer = new System.Windows.Forms.Timer(this.components);
+            this.amountOfLivesLabel = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.roompicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -71,6 +72,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Window;
+            this.panel1.Controls.Add(this.amountOfLivesLabel);
             this.panel1.Controls.Add(this.timeLeftLabel);
             this.panel1.Controls.Add(this.gameTimeLeftLabel);
             this.panel1.Location = new System.Drawing.Point(0, -2);
@@ -198,11 +200,21 @@
             this.gameTimer.Interval = 1000;
             this.gameTimer.Tick += new System.EventHandler(this.gameTimer_Tick);
             // 
+            // amountOfLivesLabel
+            // 
+            this.amountOfLivesLabel.AutoSize = true;
+            this.amountOfLivesLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.amountOfLivesLabel.Location = new System.Drawing.Point(4, 381);
+            this.amountOfLivesLabel.Name = "amountOfLivesLabel";
+            this.amountOfLivesLabel.Size = new System.Drawing.Size(142, 24);
+            this.amountOfLivesLabel.TabIndex = 2;
+            this.amountOfLivesLabel.Text = "Aantal levens: 3";
+            // 
             // SearchGameMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 412);
             this.Controls.Add(this.pictureBox8);
             this.Controls.Add(this.pictureBox7);
             this.Controls.Add(this.pictureBox5);
@@ -249,5 +261,6 @@
         private System.Windows.Forms.PictureBox pictureBox7;
         private System.Windows.Forms.PictureBox pictureBox8;
         private System.Windows.Forms.Timer gameTimer;
+        private System.Windows.Forms.Label amountOfLivesLabel;
     }
 }

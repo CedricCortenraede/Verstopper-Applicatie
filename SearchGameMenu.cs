@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,9 +22,11 @@ namespace Verstopper
 
         // Game informatie wordt ook opgeslagen zodat dit makkelijk op te halen is.
         private int secondsLeftInGame = -1;
+        private Switch currentSwitch = null;
+
         private bool canSearch = false;
         private bool foundHider = false;
-        private Switch currentSwitch = null;
+        private int seekerLives = 3;
 
         public SearchGameMenu()
         {
@@ -72,10 +75,7 @@ namespace Verstopper
             checkHiderLocationTimer.Start();
             checkHiderLocationTimer_Tick(null, null);
 
-            foreach(PictureBox box in boxList)
-            {
-                box.Enabled = false;
-            }
+            this.EnablePictureBoxStatus(false);
         }
 
         private void StartSearchPartOfGame()
@@ -84,10 +84,7 @@ namespace Verstopper
             this.canSearch = true;
             this.secondsLeftInGame = 60;
 
-            foreach (PictureBox box in boxList)
-            {
-                box.Enabled = true;
-            }
+            this.EnablePictureBoxStatus(true);
 
             timeLeftLabel.Text = "Zoek tijd over:";
             this.DisplayGameTimeLeftOnScreen();
@@ -98,7 +95,21 @@ namespace Verstopper
 
         private void StopGame()
         {
+            this.EnablePictureBoxStatus(false);
+
             gameTimer.Stop();
+
+            if (this.foundHider)
+            {
+                MessageBox.Show("Je hebt gewonnen!");
+
+                Domoticz.SendLogMessageToDomoticz("[SEEKER] Won Lives" + this.seekerLives);
+            } else
+            {
+                MessageBox.Show("Je hebt verloren!");
+
+                Domoticz.SendLogMessageToDomoticz("[SEEKER] Lost Lives:" + this.seekerLives);
+            }
         }
 
         private void HiderMovesRoom(Switch @switch)
@@ -116,8 +127,14 @@ namespace Verstopper
                 }
 
                 this.currentSwitch = @switch;
+            }
+        }
 
-
+        private void EnablePictureBoxStatus(bool enabled)
+        {
+            foreach (PictureBox box in boxList)
+            {
+                box.Enabled = enabled;
             }
         }
 
@@ -243,57 +260,73 @@ namespace Verstopper
 
                 }
             }
-            
-
-            /*if (this.canSearch)
-            {
-                Check(pictureBox1, 1);
-            }*/
         }
 
-        private void Check(PictureBox pic, int number)
+        private void Check(Switch @switch)
         {
-            pic.Image = Properties.Resources.error_40;
+            PictureBox box = boxList[int.Parse(@switch.idx) - 1];
+            box.Enabled = false;
+
+            if (this.currentSwitch.Equals(@switch))
+            {
+                box.Image = Properties.Resources.found_40;
+
+                this.foundHider = true;
+
+                this.StopGame();
+            } else
+            {
+                box.Image = Properties.Resources.error_40;
+
+                seekerLives--;
+
+                amountOfLivesLabel.Text = "Aantal levens: " + seekerLives;
+            }
+
+            if (seekerLives <= 0)
+            {
+                this.StopGame();
+            }
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {             
-            Check(pictureBox1, 1);          
+            Check(this.switches[0]);          
         }
 
         private void pictureBox2_Click(object sender, EventArgs e)
-        {           
-            Check(pictureBox2, 2);          
+        {
+            Check(this.switches[1]);
         }
 
         private void pictureBox3_Click(object sender, EventArgs e)
         {
-            Check(pictureBox3, 3);
+            Check(this.switches[2]);
         }
 
         private void pictureBox4_Click(object sender, EventArgs e)
         {
-            Check(pictureBox4, 4);
-        }
-
-        private void pictureBox6_Click(object sender, EventArgs e)
-        {
-            Check(pictureBox6, 6);
+            Check(this.switches[3]);
         }
 
         private void pictureBox5_Click(object sender, EventArgs e)
         {
-            Check(pictureBox5, 5);
+            Check(this.switches[4]);
         }
 
-        private void pictureBox8_Click(object sender, EventArgs e)
+        private void pictureBox6_Click(object sender, EventArgs e)
         {
-            Check(pictureBox8, 8);
+            Check(this.switches[5]);
         }
 
         private void pictureBox7_Click(object sender, EventArgs e)
         {
-            Check(pictureBox7, 7);
+            Check(this.switches[6]);
+        }
+
+        private void pictureBox8_Click(object sender, EventArgs e)
+        {
+            Check(this.switches[7]);
         }
     }
 }
