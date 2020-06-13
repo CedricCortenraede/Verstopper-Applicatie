@@ -45,6 +45,7 @@
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.pictureBox7 = new System.Windows.Forms.PictureBox();
             this.pictureBox8 = new System.Windows.Forms.PictureBox();
+            this.gameTimer = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.roompicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -192,6 +193,11 @@
             this.pictureBox8.TabStop = false;
             this.pictureBox8.Click += new System.EventHandler(this.pictureBox8_Click);
             // 
+            // gameTimer
+            // 
+            this.gameTimer.Interval = 1000;
+            this.gameTimer.Tick += new System.EventHandler(this.gameTimer_Tick);
+            // 
             // SearchGameMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -242,5 +248,6 @@
         private System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.PictureBox pictureBox7;
         private System.Windows.Forms.PictureBox pictureBox8;
+        private System.Windows.Forms.Timer gameTimer;
     }
 }
