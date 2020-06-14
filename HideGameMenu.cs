@@ -116,7 +116,13 @@ namespace Verstopper
 
                 gameTimeLeftLabel.Text = "Afgelopen";
 
-                Domoticz.SendLogMessageToDomoticz("[HIDING] Ended, Current room: " + this.currentSwitch.Name + " (" + this.currentSwitch.idx + ")");
+                if (this.currentSwitch != null)
+                {
+                    Domoticz.SendLogMessageToDomoticz("[HIDING] Ended, Current room: " + this.currentSwitch.idx);
+                } else
+                {
+                    Domoticz.SendLogMessageToDomoticz("[HIDING] Ended, Current room: none");
+                }
             }
         }
 

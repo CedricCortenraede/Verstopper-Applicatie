@@ -64,11 +64,6 @@
             this.startGameTimer.Interval = 1000;
             this.startGameTimer.Tick += new System.EventHandler(this.startGameTimer_Tick);
             // 
-            // checkHiderLocationTimer
-            // 
-            this.checkHiderLocationTimer.Interval = 1000;
-            this.checkHiderLocationTimer.Tick += new System.EventHandler(this.checkHiderLocationTimer_Tick);
-            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Window;
@@ -194,11 +189,6 @@
             this.pictureBox8.TabIndex = 13;
             this.pictureBox8.TabStop = false;
             this.pictureBox8.Click += new System.EventHandler(this.pictureBox8_Click);
-            // 
-            // gameTimer
-            // 
-            this.gameTimer.Interval = 1000;
-            this.gameTimer.Tick += new System.EventHandler(this.gameTimer_Tick);
             // 
             // amountOfLivesLabel
             // 

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -22,6 +23,7 @@ namespace Verstopper
 
         // Game informatie wordt ook opgeslagen zodat dit makkelijk op te halen is.
         private int secondsLeftInGame = -1;
+        private bool gameOver = false;
         private Switch currentSwitch = null;
 
         private bool canSearch = false;
@@ -46,6 +48,8 @@ namespace Verstopper
             this.CheckIfGameStarted();
         }
 
+        // Game
+
         private void CheckIfGameStarted()
         {
             // Start de timer om te checken of er een Game gestart is in de laatste 5 minuten.
@@ -66,14 +70,8 @@ namespace Verstopper
             timeLeftLabel.Text = "Verstop tijd over:";
             this.DisplayGameTimeLeftOnScreen();
 
-            // De Game timer wordt gestart.
-            gameTimer.Interval = 1000;
-            gameTimer.Start();
-
-            // De timer om de huidige locatie van de zoeker te vinden wordt gestart.
-            checkHiderLocationTimer.Interval = 100;
-            checkHiderLocationTimer.Start();
-            checkHiderLocationTimer_Tick(null, null);
+            // De Game timer en het ophalen van de locatie van de zoeker worden gestart.
+            this.StartGameThreading();
 
             this.EnablePictureBoxStatus(false);
         }
@@ -86,7 +84,8 @@ namespace Verstopper
 
             this.EnablePictureBoxStatus(true);
 
-            timeLeftLabel.Text = "Zoek tijd over:";
+
+            this.SafelyWriteTextToLabel(timeLeftLabel, "Zoek tijd over:");
             this.DisplayGameTimeLeftOnScreen();
             
             // De verstopper kan zich niet meer verplaatsen, dus de locatie hoeft niet meer bekeken te worden.
@@ -96,6 +95,8 @@ namespace Verstopper
         private void StopGame()
         {
             this.EnablePictureBoxStatus(false);
+
+            this.gameOver = true;
 
             gameTimer.Stop();
 
@@ -130,20 +131,7 @@ namespace Verstopper
             }
         }
 
-        private void EnablePictureBoxStatus(bool enabled)
-        {
-            foreach (PictureBox box in boxList)
-            {
-                box.Enabled = enabled;
-            }
-        }
-
-        private void DisplayGameTimeLeftOnScreen()
-        {
-            TimeSpan timeSpan = TimeSpan.FromSeconds(this.secondsLeftInGame);
-
-            gameTimeLeftLabel.Text = timeSpan.ToString(@"mm\:ss");
-        }
+        // Timer(s)
 
         private void startGameTimer_Tick(object sender, EventArgs e)
         {
@@ -194,72 +182,169 @@ namespace Verstopper
             }
         }
 
-        private void gameTimer_Tick(object sender, EventArgs e)
+
+        // Multi Threading
+
+        private delegate void ChangeTimeLeftLabel(String text);
+
+        private void StartGameThreading()
         {
-            if (secondsLeftInGame > 0)
+            // De Game timer wordt gestart.
+            Thread checkGameThread = new Thread(CheckGameTimer);
+
+            // De huidige locatie van de verstopper wordt opgehaald.
+            Thread hiderLocationThread = new Thread(CheckHiderLocation);
+
+            checkGameThread.Start();
+            hiderLocationThread.Start();
+        }
+
+        private void CheckGameTimer()
+        {
+            Thread.Sleep(1000);
+
+            while (!this.gameOver)
             {
-                this.secondsLeftInGame--;
 
-                this.DisplayGameTimeLeftOnScreen();
-
-                if (secondsLeftInGame <= 15 && !this.canSearch)
+                if (this.secondsLeftInGame > 0)
                 {
-                    foreach (PictureBox box in this.boxList)
+                    this.secondsLeftInGame--;
+
+                    this.DisplayGameTimeLeftOnScreen();
+
+                    if (secondsLeftInGame <= 15 && !this.canSearch)
                     {
-                        box.Image = Properties.Resources.question_mark_40;
+                        foreach (PictureBox box in this.boxList)
+                        {
+                            box.Image = Properties.Resources.question_mark_40;
+                        }
                     }
                 }
-            } else
-            {
-                // De huidige Game tijd is afgelopen, er moet nu gecontroleerd worden of het spel in totaal is afgelopen of alleen het verstop gedeelte.
-                if (this.canSearch)
+                else
                 {
-                    // De zoeker kon zoeken en de timer is afgelopen, dit betekent dat het spel voorbij is.
-                    this.StopGame();
-                } else
-                {
-                    // De zoeker kon nog niet zoeken, dit betekent dat er verstopt werd.
-                    this.StartSearchPartOfGame();
+                    // De huidige Game tijd is afgelopen, er moet nu gecontroleerd worden of het spel in totaal is afgelopen of alleen het verstop gedeelte.
+                    if (this.canSearch)
+                    {
+                        // De zoeker kon zoeken en de timer is afgelopen, dit betekent dat het spel voorbij is.
+                        this.StopGame();
+                    }
+                    else
+                    {
+                        // De zoeker kon nog niet zoeken, dit betekent dat er verstopt werd.
+                        this.StartSearchPartOfGame();
+                    }
                 }
+
+                Thread.Sleep(1000);
             }
         }
 
-        private void checkHiderLocationTimer_Tick(object sender, EventArgs e)
+        private void CheckHiderLocation()
         {
-            // De logs gaan gecontroleerd worden of de verstopper zich verplaatst heeft.
-            // Er gaat de laatste seconde gekeken worden na Logs, dit omdat deze method elke seconde herhaalt wordt.
-            List<Log> logs = Domoticz.GetLogs(DateTime.Now - new TimeSpan(0, 0, 1), 2);
-
-            // Er wordt door de logs gezocht naar logs van de Verstop applicatie.
-            if (logs != null)
+            while (!this.canSearch && !this.gameOver)
             {
-                foreach (Log log in logs)
+                // De logs gaan gecontroleerd worden of de verstopper zich verplaatst heeft.
+                // Er gaat de laatste seconde gekeken worden na Logs, dit omdat deze method elke seconde herhaalt wordt.
+                List<Log> logs = Domoticz.GetLogs(DateTime.Now - new TimeSpan(0, 0, 1), 2);
+
+                // Er wordt door de logs gezocht naar logs van de Verstop applicatie.
+                if (logs != null)
                 {
-                    String[] words = log.message.Split(' ');
-
-                    // Als het niet van de Verstop applicatie komt gaat de volgende log bekeken worden.
-                    if (! words[4].Equals("[HIDING]")) continue;
-
-                    // Als het een bericht is waar niet wordt verplaatst wordt er naar de volgende gekeken.
-                    if (! words[5].Equals("To:")) continue;
-
-                    string switchID = words[6].Trim(new Char[] { '(', ')' });
-
-                    foreach (Switch @switch in this.switches)
+                    foreach (Log log in logs)
                     {
-                        if (@switch.idx.Equals(switchID))
-                        {
-                            if (this.currentSwitch == null || !this.currentSwitch.Equals(@switch))
-                            {
-                                this.HiderMovesRoom(@switch);
+                        String[] words = log.message.Split(' ');
 
-                                break;
+                        // Als het niet van de Verstop applicatie komt gaat de volgende log bekeken worden.
+                        if (!words[4].Equals("[HIDING]")) continue;
+
+                        // Als het een bericht is waar niet wordt verplaatst wordt er naar de volgende gekeken.
+                        if (!words[5].Equals("To:")) continue;
+
+                        string switchID = words[6].Trim(new Char[] { '(', ')' });
+
+                        foreach (Switch @switch in this.switches)
+                        {
+                            if (@switch.idx.Equals(switchID))
+                            {
+                                if (this.currentSwitch == null || !this.currentSwitch.Equals(@switch))
+                                {
+                                    this.HiderMovesRoom(@switch);
+
+                                    break;
+                                }
                             }
                         }
                     }
-
                 }
+
+                Thread.Sleep(100);
             }
+        }
+
+        // Front end
+
+        private void SafelyWriteTextToLabel(Label label, string text)
+        {
+            if (label.InvokeRequired)
+            {
+                label.Invoke(new MethodInvoker(
+                    delegate ()
+                    {
+                        label.Text = text;
+                    }
+                ));
+            } else
+            {
+                label.Text = text;
+            }
+        }
+
+        private void SafelyChangeImageOfPictureBox(PictureBox box, Image image)
+        {
+            if (box.InvokeRequired)
+            {
+                box.Invoke(new MethodInvoker(
+                    delegate()
+                    {
+                        box.Image = image;
+                    }    
+                ));
+            } else
+            {
+                box.Image = image;
+            }
+        }
+
+        private void SafelyEnablePictureBox(PictureBox box, bool enabled)
+        {
+            if (box.InvokeRequired)
+            {
+                box.Invoke(new MethodInvoker(
+                    delegate ()
+                    {
+                        box.Enabled = enabled;
+                    }
+                ));
+            }
+            else
+            {
+                box.Enabled = enabled;
+            }
+        }
+
+        private void EnablePictureBoxStatus(bool enabled)
+        {
+            foreach (PictureBox box in boxList)
+            {
+                this.SafelyEnablePictureBox(box, enabled);
+            }
+        }
+
+        private void DisplayGameTimeLeftOnScreen()
+        {
+            TimeSpan timeSpan = TimeSpan.FromSeconds(this.secondsLeftInGame);
+
+            this.SafelyWriteTextToLabel(gameTimeLeftLabel, timeSpan.ToString(@"mm\:ss"));
         }
 
         private void Check(Switch @switch)
@@ -269,14 +354,14 @@ namespace Verstopper
 
             if (this.currentSwitch.Equals(@switch))
             {
-                box.Image = Properties.Resources.found_40;
+                SafelyChangeImageOfPictureBox(box, Properties.Resources.found_40);
 
                 this.foundHider = true;
 
                 this.StopGame();
             } else
             {
-                box.Image = Properties.Resources.error_40;
+                SafelyChangeImageOfPictureBox(box, Properties.Resources.error_40);
 
                 seekerLives--;
 
