@@ -235,8 +235,8 @@
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(228, 39);
             this.label11.TabIndex = 10;
-            this.label11.Text = "Je hebt dezelfde tijd als de verstopper om de verstopper te vinden. Echter heb je" +
-    " maar 3 kansen om de verstopper te vinden!";
+            this.label11.Text = "Je hebt 60 seconden de tijd als zoeker om de verstopper te vinden. Let wel op, je" +
+    " hebt maar 3 kansen om hem te vinden!\r\n";
             // 
             // label13
             // 

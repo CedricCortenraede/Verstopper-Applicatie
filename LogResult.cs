@@ -9,7 +9,6 @@ namespace Verstopper
     class LogResult
     {
         public string LastLogTime { get; set; }
-
         public List<Log> result { get; set; }
         public string status { get; set; }
         public string title { get; set; }
